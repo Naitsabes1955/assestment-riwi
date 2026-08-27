@@ -1,0 +1,1 @@
+\i /database/triggers/001_messages_search_vector.sql

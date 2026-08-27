@@ -1,0 +1,114 @@
+{
+  "entities": {
+    "users": {
+      "description": "Users authenticated in the internal messaging platform.",
+      "rules": [
+        "Each user has a unique email.",
+        "A user can be ACTIVE or INACTIVE.",
+        "Passwords are stored only as secure hashes."
+      ]
+    },
+    "channels": {
+      "description": "Private communication channels.",
+      "rules": [
+        "All channels are private.",
+        "Only channel members can access messages."
+      ]
+    },
+    "channel_members": {
+      "description": "Relationship between users and private channels.",
+      "rules": [
+        "A user can belong to multiple channels.",
+        "A channel can have multiple users.",
+        "A user cannot be added twice to the same channel."
+      ]
+    },
+    "messages": {
+      "description": "Messages sent by users inside channels.",
+      "rules": [
+        "A message belongs to exactly one channel.",
+        "A message has exactly one sender.",
+        "Messages are never physically deleted.",
+        "Deleted messages are represented through deleted_at."
+      ]
+    },
+    "message_reads": {
+      "description": "Tracks when users read messages.",
+      "rules": [
+        "A user can mark a message as read once.",
+        "Read status is associated with a specific user and message."
+      ]
+    },
+    "refresh_tokens": {
+      "description": "Refresh tokens used for JWT session rotation.",
+      "rules": [
+        "Only token hashes are stored.",
+        "Tokens can be revoked.",
+        "Expired tokens cannot be used.",
+        "Token rotation can reference a replacement token."
+      ]
+    }
+  },
+  "relationships": [
+    {
+      "from": "users",
+      "to": "channels",
+      "type": "one_to_many",
+      "via": "created_by"
+    },
+    {
+      "from": "users",
+      "to": "channels",
+      "type": "many_to_many",
+      "via": "channel_members"
+    },
+    {
+      "from": "channels",
+      "to": "messages",
+      "type": "one_to_many",
+      "via": "channel_id"
+    },
+    {
+      "from": "users",
+      "to": "messages",
+      "type": "one_to_many",
+      "via": "sender_id"
+    },
+    {
+      "from": "users",
+      "to": "message_reads",
+      "type": "one_to_many",
+      "via": "user_id"
+    },
+    {
+      "from": "messages",
+      "to": "message_reads",
+      "type": "one_to_many",
+      "via": "message_id"
+    },
+    {
+      "from": "users",
+      "to": "refresh_tokens",
+      "type": "one_to_many",
+      "via": "user_id"
+    }
+  ],
+  "normalization": {
+    "first_normal_form": [
+      "Each table has atomic attributes.",
+      "No column contains lists or repeated groups.",
+      "Many-to-many relationships are represented through rw_channel_members."
+    ],
+    "second_normal_form": [
+      "Non-key attributes depend on the complete primary key.",
+      "The composite key of rw_channel_members contains only relationship data.",
+      "Message and user attributes are stored in their respective entities."
+    ],
+    "third_normal_form": [
+      "Non-key attributes depend only on the primary key.",
+      "User information is not duplicated in channels or messages.",
+      "Channel information is not duplicated in messages.",
+      "Read information is stored independently from messages."
+    ]
+  }
+}
