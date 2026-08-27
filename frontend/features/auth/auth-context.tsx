@@ -30,6 +30,7 @@ interface AuthContextValue {
 const AuthContext = createContext<AuthContextValue | null>(null);
 
 export function AuthProvider(props: {
+  readonly apiUnavailableMessage: string;
   readonly children: ReactNode;
   readonly sessionExpiredMessage: string;
 }) {
@@ -50,8 +51,14 @@ export function AuthProvider(props: {
 
   const client = useMemo(
     () =>
-      new ApiHttpClient(apiBaseUrl, readStoredSession, setSession, props.sessionExpiredMessage),
-    [props.sessionExpiredMessage, setSession],
+      new ApiHttpClient(
+        apiBaseUrl,
+        readStoredSession,
+        setSession,
+        props.sessionExpiredMessage,
+        props.apiUnavailableMessage,
+      ),
+    [props.apiUnavailableMessage, props.sessionExpiredMessage, setSession],
   );
 
   const api = useMemo(() => authApi(client), [client]);

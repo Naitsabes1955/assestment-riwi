@@ -12,6 +12,7 @@ export class ApiHttpClient {
     private readonly getSession: () => AuthSession | null,
     private readonly setSession: (session: AuthSession | null) => void,
     private readonly sessionExpiredMessage: string,
+    private readonly apiUnavailableMessage: string,
   ) {}
 
   async request<T>(
@@ -19,16 +20,19 @@ export class ApiHttpClient {
     init: RequestInit = {},
     allowRefresh = true,
   ): Promise<T> {
-    const response = await fetch(this.url(path), this.withHeaders(init));
+    const method = init.method ?? "GET";
+    const response = await this.fetchWithDiagnostics(path, init);
 
     if (response.status === 401 && allowRefresh) {
       const refreshed = await this.refreshSession();
       return this.parse<T>(
-        await fetch(this.url(path), this.withHeaders(init, refreshed.accessToken)),
+        await this.fetchWithDiagnostics(path, init, refreshed.accessToken),
+        path,
+        method,
       );
     }
 
-    return this.parse<T>(response);
+    return this.parse<T>(response, path, method);
   }
 
   refresh(): Promise<AuthSession> {
@@ -43,20 +47,46 @@ export class ApiHttpClient {
       throw new Error(this.sessionExpiredMessage);
     }
 
-    const response = await fetch(this.url("/api/auth/refresh"), {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ refreshToken }),
-    });
+    const response = await this.fetchWithDiagnostics(
+      "/api/auth/refresh",
+      {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ refreshToken }),
+      },
+      undefined,
+      false,
+    );
 
     if (!response.ok) {
       this.setSession(null);
       throw new Error(this.sessionExpiredMessage);
     }
 
-    const session = await this.parse<AuthSession>(response);
+    const session = await this.parse<AuthSession>(response, "/api/auth/refresh", "POST");
     this.setSession(session);
     return session;
+  }
+
+  private async fetchWithDiagnostics(
+    path: string,
+    init: RequestInit = {},
+    accessToken?: string,
+    allowApiUnavailableMessage = true,
+  ): Promise<Response> {
+    const method = init.method ?? "GET";
+
+    try {
+      return await fetch(this.url(path), this.withHeaders(init, accessToken));
+    } catch (error) {
+      this.logApiIssue(path, method, "network", error);
+
+      if (allowApiUnavailableMessage) {
+        throw new Error(this.apiUnavailableMessage);
+      }
+
+      throw error;
+    }
   }
 
   private withHeaders(init: RequestInit, accessToken?: string): RequestInit {
@@ -78,18 +108,50 @@ export class ApiHttpClient {
     return `${this.baseUrl.replace(/\/$/, "")}${path}`;
   }
 
-  private async parse<T>(response: Response): Promise<T> {
+  private async parse<T>(response: Response, path: string, method: string): Promise<T> {
     if (response.status === 204) {
       return undefined as T;
     }
 
     const text = await response.text();
-    const data = text ? (JSON.parse(text) as T & ApiErrorBody) : undefined;
+    const data = this.parseJson<T & ApiErrorBody>(text, path, response.status);
 
     if (!response.ok) {
+      this.logApiIssue(path, method, response.status, data?.error?.message);
       throw new Error(data?.error?.message ?? `HTTP ${response.status}`);
     }
 
     return data as T;
+  }
+
+  private parseJson<T>(text: string, path: string, status: number): T | undefined {
+    if (!text) {
+      return undefined;
+    }
+
+    try {
+      return JSON.parse(text) as T;
+    } catch (error) {
+      this.logApiIssue(path, "parse", status, error);
+      throw new Error(`Invalid API response from ${path}`);
+    }
+  }
+
+  private logApiIssue(
+    path: string,
+    methodOrPhase: string,
+    status: number | "network",
+    detail: unknown,
+  ): void {
+    if (process.env.NODE_ENV === "production") {
+      return;
+    }
+
+    console.error("[api]", {
+      detail,
+      endpoint: path,
+      methodOrPhase,
+      status,
+    });
   }
 }
