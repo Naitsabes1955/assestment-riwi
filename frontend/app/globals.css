@@ -1,0 +1,42 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f3f6fb;
+  --foreground: #111827;
+  --riwi-primary: #285f9f;
+  --riwi-primary-strong: #173d6d;
+  --riwi-primary-soft: #e7eef8;
+  --riwi-accent: #6f8fb8;
+  --riwi-ink: #111827;
+  --riwi-muted: #667085;
+  --riwi-line: #d8e0eb;
+  --riwi-panel: #ffffff;
+  --riwi-subtle: #eef3f9;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-riwi-primary: var(--riwi-primary);
+  --color-riwi-primary-strong: var(--riwi-primary-strong);
+  --color-riwi-primary-soft: var(--riwi-primary-soft);
+  --color-riwi-accent: var(--riwi-accent);
+  --color-riwi-ink: var(--riwi-ink);
+  --color-riwi-muted: var(--riwi-muted);
+  --color-riwi-line: var(--riwi-line);
+  --color-riwi-panel: var(--riwi-panel);
+  --color-riwi-subtle: var(--riwi-subtle);
+  --font-sans: Arial, Helvetica, sans-serif;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+button,
+input,
+textarea {
+  transition: border-color 150ms ease, background-color 150ms ease, color 150ms ease;
+}

@@ -13,6 +13,8 @@ CREATE TABLE IF NOT EXISTS rw.rw_messages (
 
     deleted_at TIMESTAMPTZ,
 
+    search_vector TSVECTOR,
+
     CONSTRAINT fk_rw_messages_channel
         FOREIGN KEY (channel_id)
         REFERENCES rw.rw_channels(id)

@@ -1,3 +1,25 @@
+ALTER TABLE rw.rw_messages ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY rw_messages_member_insert
+ON rw.rw_messages
+FOR INSERT
+TO rw_app
+WITH CHECK (
+    sender_id = current_setting(
+        'app.current_user_id',
+        true
+    )::UUID
+    AND EXISTS (
+        SELECT 1
+        FROM rw.rw_channel_members cm
+        WHERE cm.channel_id = rw_messages.channel_id
+          AND cm.user_id = current_setting(
+              'app.current_user_id',
+              true
+          )::UUID
+    )
+);
+
 CREATE POLICY rw_messages_member_select
 ON rw.rw_messages
 FOR SELECT
