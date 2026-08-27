@@ -7,3 +7,5 @@ SELECT
 FROM rw.rw_channels c
 INNER JOIN rw.rw_channel_members cm
     ON cm.channel_id = c.id;
+
+GRANT SELECT ON rw.user_conversations TO rw_app;
