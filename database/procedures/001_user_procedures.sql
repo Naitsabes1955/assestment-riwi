@@ -8,13 +8,14 @@ BEGIN
     OPEN p_result FOR
         SELECT
             id,
-            name,
+            first_name,
+            last_name,
             email,
             job_title,
             status,
             created_at
         FROM rw.rw_users
-        WHERE status = 'active'
+        WHERE status = 'ACTIVE'
         ORDER BY created_at DESC, id DESC
         LIMIT p_limit;
 END;
@@ -31,7 +32,7 @@ AS $$
 BEGIN
     UPDATE rw.rw_users
     SET
-        name = p_name,
+        first_name = p_name,
         job_title = p_job_title,
         status = p_status,
         updated_at = NOW()

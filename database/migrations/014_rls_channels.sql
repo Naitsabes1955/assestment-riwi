@@ -1,3 +1,5 @@
+ALTER TABLE rw.rw_channels ENABLE ROW LEVEL SECURITY;
+
 CREATE POLICY rw_channels_member_select
 ON rw.rw_channels
 FOR SELECT

@@ -1,3 +1,5 @@
+ALTER TABLE rw.rw_messages ENABLE ROW LEVEL SECURITY;
+
 CREATE POLICY rw_messages_member_select
 ON rw.rw_messages
 FOR SELECT
