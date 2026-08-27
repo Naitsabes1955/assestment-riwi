@@ -24,7 +24,13 @@ export class RefreshSession {
 
   async execute(input: RefreshSessionInput): Promise<RefreshSessionResult> {
     const data = refreshSchema.parse(input);
-    const claims = await this.tokens.verifyRefreshToken(data.refreshToken);
+    let claims;
+
+    try {
+      claims = await this.tokens.verifyRefreshToken(data.refreshToken);
+    } catch {
+      throw new Error("Invalid refresh token");
+    }
     const replacement = await this.tokens.issueRefreshToken(claims.userId);
     const rotated = await this.auth.rotateRefreshToken(
       this.tokenHashes.hash(data.refreshToken),
