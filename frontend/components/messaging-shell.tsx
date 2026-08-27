@@ -43,7 +43,10 @@ export function MessagingShell() {
   }, []);
 
   return (
-    <AuthProvider sessionExpiredMessage={t.errorExpired}>
+    <AuthProvider
+      apiUnavailableMessage={t.errorApiUnavailable}
+      sessionExpiredMessage={t.errorExpired}
+    >
       <MessagingWorkspace locale={locale} onLocaleChange={setLocale} />
     </AuthProvider>
   );
@@ -55,7 +58,7 @@ function MessagingWorkspace(props: {
 }) {
   const t = dictionaries[props.locale];
   const auth = useAuth();
-  const client = useApiClient(t.errorExpired);
+  const client = useApiClient(t.errorExpired, t.errorApiUnavailable);
   const channels = useChannels(client, t.errorUnexpected);
   const chat = useChat(client, t.errorUnexpected);
   const search = useMessageSearch(client, t.errorUnexpected);
@@ -108,11 +111,13 @@ function MessagingWorkspace(props: {
 
   return (
     <main className="min-h-screen bg-background text-riwi-ink">
-      <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col px-4 py-4">
-        <header className="mb-4 flex items-center justify-between gap-4 rounded-lg border border-riwi-line bg-riwi-panel px-4 py-3">
+      <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col px-4 py-5 sm:px-6">
+        <header className="mb-5 flex items-center justify-between gap-4 rounded-2xl border border-riwi-line bg-riwi-panel/95 px-4 py-3 shadow-sm sm:px-5">
           <div>
-            <p className="text-sm font-semibold text-riwi-primary-strong">{t.appName}</p>
-            <p className="text-xs text-riwi-muted">{apiBaseUrl}</p>
+            <p className="text-base font-semibold tracking-tight text-riwi-primary-strong">
+              {t.appName}
+            </p>
+            <p className="mt-0.5 text-xs text-riwi-muted">{apiBaseUrl}</p>
           </div>
           <LanguageSwitcher locale={props.locale} onChange={props.onLocaleChange} />
         </header>
@@ -123,7 +128,7 @@ function MessagingWorkspace(props: {
           <>
             {appError ? <ErrorMessage message={appError} /> : null}
 
-            <section className="grid flex-1 gap-4 lg:grid-cols-[280px_minmax(0,1fr)_340px]">
+            <section className="grid flex-1 gap-4 lg:grid-cols-[290px_minmax(0,1fr)_350px]">
               <ChannelSidebar
                 channels={channelItems}
                 currentUser={auth.currentUser}

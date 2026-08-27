@@ -1,17 +1,17 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f3f6fb;
+  --background: #edf2f8;
   --foreground: #111827;
-  --riwi-primary: #285f9f;
-  --riwi-primary-strong: #173d6d;
-  --riwi-primary-soft: #e7eef8;
-  --riwi-accent: #6f8fb8;
-  --riwi-ink: #111827;
+  --riwi-primary: #275a91;
+  --riwi-primary-strong: #153a63;
+  --riwi-primary-soft: #e6eef8;
+  --riwi-accent: #7594b8;
+  --riwi-ink: #132033;
   --riwi-muted: #667085;
-  --riwi-line: #d8e0eb;
+  --riwi-line: #d5deea;
   --riwi-panel: #ffffff;
-  --riwi-subtle: #eef3f9;
+  --riwi-subtle: #f4f7fb;
 }
 
 @theme inline {
@@ -38,5 +38,19 @@ body {
 button,
 input,
 textarea {
-  transition: border-color 150ms ease, background-color 150ms ease, color 150ms ease;
+  transition: border-color 150ms ease, background-color 150ms ease, box-shadow 150ms ease,
+    color 150ms ease, opacity 150ms ease;
+}
+
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--riwi-primary) 70%, white);
+  outline-offset: 2px;
+}
+
+button:disabled,
+input:disabled,
+textarea:disabled {
+  cursor: not-allowed;
 }

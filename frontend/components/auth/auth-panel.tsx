@@ -56,10 +56,17 @@ export function AuthPanel(props: { readonly t: Dictionary }) {
   }
 
   return (
-    <section className="mx-auto mt-16 w-full max-w-md rounded-lg border border-riwi-line bg-riwi-panel p-5 shadow-sm">
-      <div className="mb-5 grid grid-cols-2 gap-2 rounded-md bg-riwi-subtle p-1">
+    <section className="mx-auto mt-14 w-full max-w-md rounded-2xl border border-riwi-line bg-riwi-panel p-6 shadow-sm">
+      <div className="mb-6">
+        <p className="text-sm font-semibold text-riwi-primary-strong">{props.t.appName}</p>
+        <h1 className="mt-1 text-2xl font-semibold tracking-tight text-riwi-ink">
+          {mode === "login" ? props.t.enter : props.t.createAccount}
+        </h1>
+      </div>
+
+      <div className="mb-5 grid grid-cols-2 gap-2 rounded-xl bg-riwi-subtle p-1">
         <button
-          className={`rounded-md px-3 py-2 text-sm font-medium ${
+          className={`rounded-lg px-3 py-2 text-sm font-medium ${
             mode === "login" ? "bg-riwi-panel text-riwi-primary-strong shadow-sm" : "text-riwi-muted"
           }`}
           onClick={() => setMode("login")}
@@ -68,7 +75,7 @@ export function AuthPanel(props: { readonly t: Dictionary }) {
           {props.t.login}
         </button>
         <button
-          className={`rounded-md px-3 py-2 text-sm font-medium ${
+          className={`rounded-lg px-3 py-2 text-sm font-medium ${
             mode === "register" ? "bg-riwi-panel text-riwi-primary-strong shadow-sm" : "text-riwi-muted"
           }`}
           onClick={() => setMode("register")}
@@ -99,8 +106,18 @@ export function AuthPanel(props: { readonly t: Dictionary }) {
       ) : (
         <form className="space-y-4" onSubmit={submitRegister}>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            <TextInput autoComplete="given-name" label={props.t.firstName} onChange={setFirstName} value={firstName} />
-            <TextInput autoComplete="family-name" label={props.t.lastName} onChange={setLastName} value={lastName} />
+            <TextInput
+              autoComplete="given-name"
+              label={props.t.firstName}
+              onChange={setFirstName}
+              value={firstName}
+            />
+            <TextInput
+              autoComplete="family-name"
+              label={props.t.lastName}
+              onChange={setLastName}
+              value={lastName}
+            />
           </div>
           <TextInput
             autoComplete="email"
@@ -109,7 +126,12 @@ export function AuthPanel(props: { readonly t: Dictionary }) {
             type="email"
             value={registerEmail}
           />
-          <TextInput autoComplete="organization-title" label={props.t.jobTitle} onChange={setJobTitle} value={jobTitle} />
+          <TextInput
+            autoComplete="organization-title"
+            label={props.t.jobTitle}
+            onChange={setJobTitle}
+            value={jobTitle}
+          />
           <TextInput
             autoComplete="new-password"
             label={props.t.password}
@@ -136,11 +158,11 @@ function TextInput(props: {
   readonly value: string;
 }) {
   return (
-    <label className="block text-sm font-medium">
+    <label className="block text-sm font-medium text-riwi-ink">
       {props.label}
       <input
         autoComplete={props.autoComplete}
-        className="mt-1 w-full rounded-md border border-riwi-line px-3 py-2 outline-none focus:border-riwi-primary"
+        className="mt-1.5 w-full rounded-lg border border-riwi-line bg-white px-3 py-2.5 text-sm outline-none focus:border-riwi-primary focus:shadow-[0_0_0_3px_rgba(39,90,145,0.12)]"
         minLength={props.minLength}
         onChange={(event) => props.onChange(event.target.value)}
         required
@@ -158,7 +180,7 @@ function SubmitButton(props: {
 }) {
   return (
     <button
-      className="w-full rounded-md bg-riwi-primary px-4 py-2.5 text-sm font-semibold text-white hover:bg-riwi-primary-strong disabled:opacity-60"
+      className="w-full rounded-lg bg-riwi-primary px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-riwi-primary-strong disabled:opacity-60"
       disabled={props.loading}
       type="submit"
     >

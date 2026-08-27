@@ -14,14 +14,15 @@ export function ChannelSidebar(props: {
   readonly t: Dictionary;
 }) {
   return (
-    <aside className="flex min-h-[70vh] flex-col rounded-lg border border-riwi-line bg-riwi-panel">
-      <div className="border-b border-riwi-line p-3">
-        <p className="text-sm font-medium">
+    <aside className="flex min-h-[72vh] flex-col rounded-2xl border border-riwi-line bg-riwi-panel shadow-sm">
+      <div className="border-b border-riwi-line p-4">
+        <p className="text-sm font-semibold text-riwi-ink">
           {props.currentUser.firstName} {props.currentUser.lastName}
         </p>
-        <p className="break-all text-xs text-riwi-muted">{props.currentUser.email}</p>
+        <p className="mt-0.5 break-all text-xs text-riwi-muted">{props.currentUser.email}</p>
+        <p className="mt-1 text-xs text-riwi-muted">{props.currentUser.jobTitle}</p>
         <button
-          className="mt-3 w-full rounded-md border border-riwi-line px-3 py-2 text-sm font-medium hover:bg-riwi-subtle"
+          className="mt-4 w-full rounded-lg border border-riwi-line px-3 py-2 text-sm font-medium text-riwi-primary-strong hover:bg-riwi-subtle disabled:opacity-60"
           onClick={props.onLogout}
           type="button"
         >
@@ -29,12 +30,12 @@ export function ChannelSidebar(props: {
         </button>
       </div>
 
-      <div className="flex items-center justify-between p-3">
+      <div className="flex items-center justify-between px-4 py-3">
         <h2 className="text-sm font-semibold uppercase tracking-wide text-riwi-muted">
           {props.t.channels}
         </h2>
         <button
-          className="rounded-md border border-riwi-line px-2 py-1 text-xs hover:bg-riwi-subtle"
+          className="rounded-lg border border-riwi-line px-2.5 py-1.5 text-xs font-medium text-riwi-primary-strong hover:bg-riwi-subtle"
           onClick={props.onRefresh}
           type="button"
         >
@@ -42,18 +43,23 @@ export function ChannelSidebar(props: {
         </button>
       </div>
 
-      <div className="flex-1 space-y-2 overflow-y-auto p-3 pt-0">
+      <div className="flex-1 space-y-2 overflow-y-auto px-3 pb-4">
         {props.loading ? (
-          <p className="py-8 text-center text-sm text-riwi-muted">{props.t.loadingChannels}</p>
+          <p className="rounded-xl bg-riwi-subtle px-3 py-8 text-center text-sm text-riwi-muted">
+            {props.t.loadingChannels}
+          </p>
         ) : props.channels.length === 0 ? (
-          <p className="py-8 text-center text-sm text-riwi-muted">{props.t.channelEmpty}</p>
+          <div className="rounded-xl border border-dashed border-riwi-line bg-riwi-subtle px-4 py-8 text-center">
+            <p className="text-sm font-medium text-riwi-ink">{props.t.channelEmpty}</p>
+            <p className="mt-2 text-xs leading-5 text-riwi-muted">{props.t.channelEmptyHelp}</p>
+          </div>
         ) : (
           props.channels.map((channel) => (
             <button
-              className={`w-full rounded-md border px-3 py-2 text-left ${
+              className={`w-full rounded-xl border px-3 py-3 text-left shadow-sm ${
                 props.selectedChannelId === channel.id
-                  ? "border-riwi-primary bg-riwi-primary-soft"
-                  : "border-riwi-line hover:bg-riwi-subtle"
+                  ? "border-riwi-primary bg-riwi-primary-soft text-riwi-primary-strong"
+                  : "border-riwi-line bg-white hover:bg-riwi-subtle"
               }`}
               key={channel.id}
               onClick={() => props.onSelect(channel.id)}

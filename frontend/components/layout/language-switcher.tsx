@@ -5,16 +5,20 @@ export function LanguageSwitcher(props: {
   readonly onChange: (locale: Locale) => void;
 }) {
   return (
-    <div className="grid grid-cols-2 rounded-md border border-riwi-line p-1 text-sm">
+    <div className="grid grid-cols-2 rounded-full border border-riwi-line bg-riwi-subtle p-1 text-sm shadow-inner">
       <button
-        className={`rounded px-2 py-1 ${props.locale === "es" ? "bg-riwi-ink text-white" : ""}`}
+        className={`rounded-full px-3 py-1 ${
+          props.locale === "es" ? "bg-riwi-primary-strong text-white shadow-sm" : "text-riwi-muted"
+        }`}
         onClick={() => props.onChange("es")}
         type="button"
       >
         ES
       </button>
       <button
-        className={`rounded px-2 py-1 ${props.locale === "en" ? "bg-riwi-ink text-white" : ""}`}
+        className={`rounded-full px-3 py-1 ${
+          props.locale === "en" ? "bg-riwi-primary-strong text-white shadow-sm" : "text-riwi-muted"
+        }`}
         onClick={() => props.onChange("en")}
         type="button"
       >
