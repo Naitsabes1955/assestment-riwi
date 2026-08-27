@@ -39,3 +39,6 @@ esta carpeta funciona como un mock data o banco de prueba, donde insertamos data
 - 002_send_message : permite validar y crear mensajes directamente
 
 
+### security_roles (RLS)
+
+se utiliza un archivo llamado 011_security_roles.sql para utilizar a "un integrante" que va de cara a la base de datos sin sacrificar los permisos de administrador de la cuenta principal
